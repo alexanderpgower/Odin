@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     tools:context="com.alexgower.odin.MainActivity">
 
 
@@ -42,13 +43,33 @@
        android:paddingTop="105dp" >
    </android.support.v4.view.ViewPager>
 
-   <android.support.design.widget.FloatingActionButton
-       android:id="@+id/fab"
-       app:backgroundTint="@color/red"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_gravity="bottom|end"
-       android:layout_margin="@dimen/fab_margin"
-       android:src="@drawable/ic_add" />
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floating_action_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_behavior="com.alexgower.odin.FloatingActionMenuBehavior"
+
+        fab:menu_animationDelayPerItem="15"
+        fab:menu_labels_textSize="15sp">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/material_design_floating_action_menu_item1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fab_add"
+            fab:fab_label="New Question"
+            fab:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/material_design_floating_action_menu_item2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fab_add"
+            fab:fab_label="New Topic"
+            fab:fab_size="mini" />
+
+    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

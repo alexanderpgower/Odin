@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:text="TOPICS TAB"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewB">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/topicsCardList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</RelativeLayout>

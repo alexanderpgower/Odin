@@ -3,7 +3,6 @@ package com.alexgower.odin;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +16,6 @@ import java.util.List;
 
 public class RandomTab extends Fragment {
 
-    // SwipeRefreshLayout swipeContainer;
     RecyclerView recList;
     QuestionCardAdapter ca;
 
@@ -27,7 +25,7 @@ public class RandomTab extends Fragment {
         View v = inflater.inflate(R.layout.random_tab, container, false);
 
         //Create RecyclerView and LinearLayoutManager for that view of "All Cards"
-        recList = (RecyclerView) v.findViewById(R.id.cardList);
+        recList = (RecyclerView) v.findViewById(R.id.questionsCardList);
         recList.setHasFixedSize(false);
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -46,7 +44,7 @@ public class RandomTab extends Fragment {
         List<QuestionCardInfo> result = new ArrayList<>();
 
         for (int i = 0; i < 100; i++) {
-            QuestionCardInfo ci = new QuestionCardInfo("Question", "Answer");
+            QuestionCardInfo ci = new QuestionCardInfo("Question " + i, "Answer");
             result.add(ci);
         }
 

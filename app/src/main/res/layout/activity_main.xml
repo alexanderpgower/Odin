@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:elevation="2dp">
+        android:elevation="2dp"
+        android:id="@+id/appbar">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -38,9 +39,7 @@
        android:id="@+id/pager"
        android:layout_height="match_parent"
        android:layout_width="match_parent"
-       android:layout_marginTop="60px"
-       >
-
+       android:paddingTop="105dp" >
    </android.support.v4.view.ViewPager>
 
    <android.support.design.widget.FloatingActionButton

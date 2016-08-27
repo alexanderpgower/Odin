@@ -12,18 +12,6 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
 
-/**
- * Created by Matteo on 08/08/2015.
- *
- * Floating Action Menu Behavior for Clans.FloatingActionButton
- * https://github.com/Clans/FloatingActionButton/
- *
- * Use this behavior as your app:layout_behavior attribute in your Floating Action Menu to use the
- * FabMenu in a Coordinator Layout.
- *
- * Remember to use the correct namespace for the fab:
- * xmlns:fab="http://schemas.android.com/apk/res-auto"
- */
 public class FloatingActionMenuBehavior extends CoordinatorLayout.Behavior {
     private float mTranslationY;
 

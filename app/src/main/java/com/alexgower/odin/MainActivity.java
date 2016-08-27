@@ -1,25 +1,50 @@
 package com.alexgower.odin;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 public class MainActivity extends AppCompatActivity {
 
-    // Declaring Your View and Variables
+    final Context context = this;
+
+    //Layout variables
     ViewPager pager;
     ViewPagerAdapter adapter;
     CharSequence Titles[]={"Random","Topics"};
     int NumberOfTabs = 2;
+
+    //Topic image selection variables
+    int IMAGE_PICKER_SELECT = 0;
+    AlertDialog dialog;
 
 
     @Override
@@ -72,22 +97,96 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpFloatingActionButtions(){
-        FloatingActionMenu materialDesignFAM = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
+        //FloatingActionButtons in FloatingActionMenu
         FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item1);
         FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item2);
 
-        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {public void onClick(View v) {setUpNewQuestionDialog();}});
+        floatingActionButton2.setOnClickListener(new View.OnClickListener() {public void onClick(View v) {setupNewTopicDialog();}});
+    }
+
+    public void setUpNewQuestionDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.new_question_layout);
+        final AlertDialog dialog = builder.create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.show();
+
+        ImageButton done = (ImageButton) dialog.findViewById(R.id.closeDialogButton);
+        ImageButton newQuestion = (ImageButton) dialog.findViewById(R.id.newQuestionButton);
+
+
+        done.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                dialog.dismiss();
             }
         });
-        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+
+        newQuestion.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                dialog.dismiss();
+
+                try {
+                    Thread.sleep(300);
+                    dialog.show();
+                } catch (InterruptedException e) {
+
+                }
             }
         });
     }
+
+    public void setupNewTopicDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.new_topic_layout);
+        dialog = builder.create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.show();
+
+        ImageButton done = (ImageButton) dialog.findViewById(R.id.closeDialogButton);
+        ImageButton selectImage = (ImageButton) dialog.findViewById(R.id.selectImageButton);
+
+
+        done.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                dialog.dismiss();
+            }
+        });
+
+        selectImage.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_PICKER_SELECT);
+
+            }
+        });
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ImageButton selectImage = (ImageButton) dialog.findViewById(R.id.selectImageButton);
+
+        if (requestCode == IMAGE_PICKER_SELECT  && resultCode == Activity.RESULT_OK) {
+            try {
+                Uri selectedImage = data.getData();
+                InputStream imageStream = getContentResolver().openInputStream(selectedImage);
+                Bitmap selectedImageBitmap = BitmapFactory.decodeStream(imageStream);
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(selectedImageBitmap, 200, 200, false);
+
+                selectImage.setImageBitmap(resizedBitmap);
+                selectImage.setBackgroundColor(Color.TRANSPARENT);
+
+            }catch(FileNotFoundException e){
+                Toast.makeText(context,"Could not find image file there",Toast.LENGTH_LONG);
+            }
+        }
+
+    }
+
 }

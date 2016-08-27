@@ -58,7 +58,8 @@
             android:id="@+id/material_design_floating_action_menu_item1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/fab_add"
+
+            android:src="@drawable/question_icon"
             fab:fab_label="New Question"
             fab:fab_size="mini" />
 
@@ -66,7 +67,7 @@
             android:id="@+id/material_design_floating_action_menu_item2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/fab_add"
+            android:src="@drawable/new_topic_icon"
             fab:fab_label="New Topic"
             fab:fab_size="mini" />
 

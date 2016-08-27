@@ -27,6 +27,10 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
         TopicCardInfo ci = topicCardList.get(i);
         topicCardViewHolder.vTopicName.setText(ci.topicName);
 
+        if(ci.topicImage!=null){
+            topicCardViewHolder.vTopicImage.setImageBitmap(ci.topicImage);
+        }
+
 
     }
 
@@ -41,11 +45,13 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
         public View view;
 
         protected TextView vTopicName;
+        protected ImageView vTopicImage;
 
         public TopicCardViewHolder(View v) {
             super(v);
 
             vTopicName =  (TextView) v.findViewById(R.id.topicNameTextView);
+            vTopicImage = (ImageView) v.findViewById(R.id.topicImageView);
 
             view = v;
             view.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +63,17 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
                 }
 
             });
+
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    removeAt(getAdapterPosition());
+                    return true;
+
+                }
+
+                });
 
         }
 

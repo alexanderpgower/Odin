@@ -27,12 +27,10 @@ public class RandomTab extends Fragment {
         //Create RecyclerView and LinearLayoutManager for that view of "All Cards"
         recList = (RecyclerView) v.findViewById(R.id.questionsCardList);
         recList.setHasFixedSize(false);
-
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
         recList.setItemAnimator(new DefaultItemAnimator());
-
         ca = new QuestionCardAdapter(createQuestions());
         recList.setAdapter(ca);
 

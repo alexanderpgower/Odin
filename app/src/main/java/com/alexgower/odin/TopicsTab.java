@@ -28,11 +28,9 @@ public class TopicsTab extends Fragment {
         //Create RecyclerView and LinearLayoutManager for that view of "All Cards"
         recList = (RecyclerView) v.findViewById(R.id.topicsCardList);
         recList.setHasFixedSize(false);
-
         GridLayoutManager glm = new GridLayoutManager(getActivity(),3);
         recList.setLayoutManager(glm);
         recList.setItemAnimator(new DefaultItemAnimator());
-
         ca = new TopicCardAdapter(createTopics());
         recList.setAdapter(ca);
 

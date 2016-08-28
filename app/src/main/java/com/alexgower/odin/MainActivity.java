@@ -1,36 +1,32 @@
 package com.alexgower.odin;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,15 +42,18 @@ public class MainActivity extends AppCompatActivity {
     int IMAGE_PICKER_SELECT = 0;
     AlertDialog dialog;
 
+    //Topic variables
+    Bitmap topicBitmap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setUpExampleTopic();
         setUpLayout();
         setUpFloatingActionButtions();
-
     }
 
     @Override
@@ -127,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         newQuestion.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 dialog.dismiss();
-
                 try {
                     Thread.sleep(300);
                     dialog.show();
@@ -149,13 +147,6 @@ public class MainActivity extends AppCompatActivity {
         ImageButton done = (ImageButton) dialog.findViewById(R.id.closeDialogButton);
         ImageButton selectImage = (ImageButton) dialog.findViewById(R.id.selectImageButton);
 
-
-        done.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                dialog.dismiss();
-            }
-        });
-
         selectImage.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
 
@@ -167,6 +158,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        done.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                EditText newTopicET = (EditText) dialog.findViewById(R.id.newTopicET);
+                String topicName = newTopicET.getText().toString();
+
+                Topic topic = new Topic(topicName,topicBitmap,context);
+                topic.save(context);
+
+                dialog.dismiss();
+            }
+        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -177,9 +179,10 @@ public class MainActivity extends AppCompatActivity {
                 Uri selectedImage = data.getData();
                 InputStream imageStream = getContentResolver().openInputStream(selectedImage);
                 Bitmap selectedImageBitmap = BitmapFactory.decodeStream(imageStream);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(selectedImageBitmap, 200, 200, false);
 
-                selectImage.setImageBitmap(resizedBitmap);
+                topicBitmap = Bitmap.createScaledBitmap(selectedImageBitmap, 200, 200, false);
+
+                selectImage.setImageBitmap(topicBitmap);
                 selectImage.setBackgroundColor(Color.TRANSPARENT);
 
             }catch(FileNotFoundException e){
@@ -189,4 +192,78 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void setUpExampleTopic(){
+        //Hardcoded file information just to check if already exists
+        String filepath = getFilesDir() + "/Example_Topic";
+        File exampleTopicFile = new File(filepath);
+
+        if(!exampleTopicFile.exists()){
+            Topic exampleTopic = new Topic("Example Topic",null,context);
+            for(int i=0; i<100;i++){
+                String question = "Example Question " + i ;
+                String answer = "Answer to example question " + i;
+                exampleTopic.addCard(question,answer);
+            }
+            exampleTopic.save(context);
+            Toast.makeText(context,"Auto-made 'Example Topic.",Toast.LENGTH_LONG).show();
+            }
+        }
+
+    public ArrayList<String> getTopicFilesNames(){
+        File allFilesInPath[] = getFilesDir().listFiles();
+
+        ArrayList<String> result = new ArrayList<>();
+
+        //Remove files this app didn't make
+        for(int i = 0; i< allFilesInPath.length; i++){
+            if(!allFilesInPath[i].getName().equals("instant-run")&&!allFilesInPath[i].getName().equals("rList-com.alexgower.odin.MainActivity")&&!allFilesInPath[i].isDirectory()&&!allFilesInPath[i].getName().endsWith(".png")){
+                result.add(allFilesInPath[i].getName().replace('_',' '));
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<File> getTopicFiles(){
+        File allFilesInPath[] = getFilesDir().listFiles();
+
+        ArrayList<File> result = new ArrayList<>();
+
+        //Remove files this app didn't make
+        for(int i = 0; i< allFilesInPath.length; i++){
+            if(!allFilesInPath[i].getName().equals("instant-run")&&!allFilesInPath[i].getName().equals("rList-com.alexgower.odin.MainActivity")&&!allFilesInPath[i].isDirectory()&&!allFilesInPath[i].getName().endsWith(".png")){
+                result.add(allFilesInPath[i]);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<Bitmap> getTopicImageFiles(){
+        File allFilesInPath[] = getFilesDir().listFiles();
+
+        ArrayList<Bitmap> result = new ArrayList<>();
+
+        //Remove files this app didn't make
+        for(int i = 0; i< allFilesInPath.length; i++){
+            if(!allFilesInPath[i].getName().equals("instant-run")&&!allFilesInPath[i].getName().equals("rList-com.alexgower.odin.MainActivity")&&!allFilesInPath[i].isDirectory()&&allFilesInPath[i].getName().endsWith(".png")){
+                result.add(getBitmapOf(allFilesInPath[i]));
+            }
+        }
+        return result;
+    }
+
+
+    public Bitmap getBitmapOf(File filePath) {
+        Bitmap image = BitmapFactory.decodeResource(getResources(),R.drawable.tick);
+        try {
+            FileInputStream fi = new FileInputStream(filePath);
+            image = BitmapFactory.decodeStream(fi);
+            return image;
+        } catch (Exception e){
+
+        }
+        return image;
+    }
+
+
 }
+

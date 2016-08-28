@@ -29,7 +29,6 @@ public class FloatingActionMenuBehavior extends CoordinatorLayout.Behavior {
         if (child instanceof FloatingActionMenu && dependency instanceof Snackbar.SnackbarLayout) {
             this.updateTranslation(parent, child, dependency);
         }
-
         return false;
     }
 
@@ -66,9 +65,6 @@ public class FloatingActionMenuBehavior extends CoordinatorLayout.Behavior {
         return minOffset;
     }
 
-    /**
-     * onStartNestedScroll and onNestedScroll will hide/show the FabMenu when a scroll is detected.
-     */
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, View child,
                                        View directTargetChild, View target, int nestedScrollAxes) {

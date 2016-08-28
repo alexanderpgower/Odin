@@ -27,16 +27,13 @@ public class Topic {
         }
     }
 
-    public void save(Context c){
+    public Topic(String topicName){
+        this.topicName = topicName;
+    }
+
+    public void make(Context c){
         try {
             FileOutputStream fos = c.openFileOutput(filenameOfTopic(topicName), Context.MODE_APPEND);
-
-            for (int i = 0; i < questionArray.size(); i++) {
-                String question = questionArray.get(i) + "\r\n";
-                fos.write(question.getBytes());
-                String answer = answerArray.get(i) + "\r\n";
-                fos.write(answer.getBytes());
-            }
             fos.close();
 
             String imageFileName = filenameOfTopic(topicName) + ".png";
@@ -48,13 +45,23 @@ public class Topic {
         }
     }
 
+    public void saveNewCard(Context c, String questionIn, String answerIn){
+        try {
+            FileOutputStream fos = c.openFileOutput(filenameOfTopic(topicName), Context.MODE_APPEND);
+
+            String question = questionIn + "\r\n";
+            fos.write(question.getBytes());
+            String answer = answerIn + "\r\n";
+            fos.write(answer.getBytes());
+            fos.close();
+
+        } catch(Exception e){
+            Toast.makeText(c,e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+    }
 
     public String filenameOfTopic(String topicNameIn){
         return topicNameIn.replace(' ','_');
     }
 
-    public void addCard(String questionIn, String answerIn){
-        questionArray.add(questionIn);
-        answerArray.add(answerIn);
-    }
 }

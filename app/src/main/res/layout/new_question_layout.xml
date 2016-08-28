@@ -15,12 +15,20 @@
         android:layout_height="match_parent"
         android:padding="10dp">
 
+        <Spinner
+            android:id="@+id/topicForQuestionSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="-7dp"/>
+
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Question: "
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_below="@+id/topicForQuestionSpinner"
             android:id="@+id/questionAnswerTextView" />
 
         <EditText
@@ -29,7 +37,7 @@
             android:id="@+id/questionEditText"
             android:layout_below="@+id/questionAnswerTextView"
             android:hint="type question here..."
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:layout_width="wrap_content"

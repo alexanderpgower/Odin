@@ -16,8 +16,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -27,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
     //Topic variables
     Bitmap topicBitmap;
+
+    //New question variables
+    Spinner topicSpinner;
 
 
     @Override
@@ -116,21 +122,56 @@ public class MainActivity extends AppCompatActivity {
         ImageButton done = (ImageButton) dialog.findViewById(R.id.closeDialogButton);
         ImageButton newQuestion = (ImageButton) dialog.findViewById(R.id.newQuestionButton);
 
+        topicSpinner = (Spinner) dialog.findViewById(R.id.topicForQuestionSpinner);
+        List<String> list = getTopicFilesNames();
+        list.remove("Example Topic");
+        list.add(0, "Choose topic for question");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        topicSpinner.setAdapter(dataAdapter);
+        topicSpinner.setSelection(list.indexOf("Choose topic for question"));
+
 
         done.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                dialog.dismiss();
+                if(!topicSpinner.getSelectedItem().toString().equals("Choose topic for question")) {
+                    EditText questionEditText = (EditText) dialog.findViewById(R.id.questionEditText);
+                    EditText answerEditText = (EditText) dialog.findViewById(R.id.answerEditText);
+                    Topic topic = new Topic(topicSpinner.getSelectedItem().toString());
+                    topic.saveNewCard(context, questionEditText.getText().toString(), answerEditText.getText().toString());
+
+                    questionEditText.setText("");
+                    answerEditText.setText("");
+                    dialog.dismiss();
+                }else{
+                    Toast.makeText(context, "Choose a topic for the question.",Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 
         newQuestion.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                dialog.dismiss();
-                try {
-                    Thread.sleep(300);
-                    dialog.show();
-                } catch (InterruptedException e) {
+                if(!topicSpinner.getSelectedItem().toString().equals("Choose topic for question")) {
+                    EditText questionEditText = (EditText) dialog.findViewById(R.id.questionEditText);
+                    EditText answerEditText = (EditText) dialog.findViewById(R.id.answerEditText);
+                    Topic topic = new Topic(topicSpinner.getSelectedItem().toString());
+                    topic.saveNewCard(context, questionEditText.getText().toString(), answerEditText.getText().toString());
 
+                    questionEditText.setText("");
+                    answerEditText.setText("");
+                    dialog.dismiss();
+
+                    try {
+                        Thread.sleep(300);
+                        dialog.show();
+                    } catch (InterruptedException e) {
+
+                    }
+                }else{
+                    Toast.makeText(context, "Choose a topic for the question.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -164,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 String topicName = newTopicET.getText().toString();
 
                 Topic topic = new Topic(topicName,topicBitmap,context);
-                topic.save(context);
+                topic.make(context);
 
                 dialog.dismiss();
             }
@@ -199,13 +240,13 @@ public class MainActivity extends AppCompatActivity {
 
         if(!exampleTopicFile.exists()){
             Topic exampleTopic = new Topic("Example Topic",null,context);
+            exampleTopic.make(context);
             for(int i=0; i<100;i++){
                 String question = "Example Question " + i ;
                 String answer = "Answer to example question " + i;
-                exampleTopic.addCard(question,answer);
+                exampleTopic.saveNewCard(context,question,answer);
             }
-            exampleTopic.save(context);
-            Toast.makeText(context,"Auto-made 'Example Topic.",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Auto-made 'Example Topic'.",Toast.LENGTH_LONG).show();
             }
         }
 

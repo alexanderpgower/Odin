@@ -1,6 +1,11 @@
 package com.alexgower.odin;
 
+
+
+
 import android.content.Context;
+
+
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +21,7 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
 
     protected List<TopicCardInfo> topicCardList;
     protected Context context;
+    protected int position;
 
     public TopicCardAdapter(List<TopicCardInfo> topicCardList) {
         this.topicCardList = topicCardList;
@@ -58,6 +64,7 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
                 public void onClick(View v) {
 
                     vTopicName.setText("Clicked");
+                    position = getAdapterPosition();
 
                 }
 
@@ -98,5 +105,8 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
         this.context = c;
     }
 
+    public int getLastClickedPosition(){
+        return this.position;
+    }
 
 }

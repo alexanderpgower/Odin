@@ -33,9 +33,7 @@ public class InTopic extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.in_topic, container, false);
 
-        //topicName = getArguments().getString("topicName");
-
-        this.topicName = "Example Topic";
+        topicName = getArguments().getString("topicName");
         getTopicCards();
 
         //Create RecyclerView and LinearLayoutManager for that view of "All Cards"
@@ -78,12 +76,9 @@ public class InTopic extends Fragment {
         }
 
         if(allQuestions.size()!=allAnswers.size()) {
-            Toast.makeText(getContext(), "Error occured, different number of questions and answers", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Error occurred, different number of questions and answers", Toast.LENGTH_LONG).show();
         }
     }
-
-
-
 
     private List<QuestionCardInfo> createQuestions() {
 
@@ -96,5 +91,6 @@ public class InTopic extends Fragment {
 
         return result;
     }
+
 }
 

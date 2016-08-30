@@ -10,9 +10,4 @@ public class TopicCardInfo {
         this.topicName = topicNameIn;
         this.topicImage = topicImageIn;
     }
-
-    public TopicCardInfo(String topicNameIn) {
-        this.topicName = topicNameIn;
-    }
-
 }

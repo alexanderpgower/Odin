@@ -12,8 +12,6 @@ public class Topic {
     Context context;
     String topicName;
     Bitmap topicImage;
-    ArrayList<String> questionArray = new ArrayList<>();
-    ArrayList<String> answerArray = new ArrayList<>();
 
     public Topic(String topicName,Bitmap topicImage, Context c){
         this.topicName = topicName;

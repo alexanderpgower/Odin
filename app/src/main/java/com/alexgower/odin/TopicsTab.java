@@ -23,7 +23,6 @@ public class TopicsTab extends Fragment{
         final FragmentTransaction initialTransaction = getChildFragmentManager().beginTransaction();
         initialTransaction.add(R.id.topics_tab_fragment_container, TopicsTabTopicsList).commit();
 
-
         return v;
     }
 

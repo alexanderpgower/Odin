@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity{
 
     final Context context = this;
 
@@ -124,7 +124,6 @@ public abstract class MainActivity extends AppCompatActivity{
 
         topicSpinner = (Spinner) dialog.findViewById(R.id.topicForQuestionSpinner);
         List<String> list = getTopicFilesNames();
-        list.remove("Example Topic");
         list.add(0, "Choose topic for question");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);

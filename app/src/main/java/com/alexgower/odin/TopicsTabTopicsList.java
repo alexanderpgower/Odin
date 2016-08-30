@@ -10,15 +10,17 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class TopicsTabTopicsList extends Fragment {
+public class TopicsTabTopicsList extends Fragment implements TopicClickListener {
 
     RecyclerView recList;
     TopicCardAdapter ca;
@@ -37,16 +39,23 @@ public class TopicsTabTopicsList extends Fragment {
         GridLayoutManager glm = new GridLayoutManager(getActivity(),3);
         recList.setLayoutManager(glm);
         recList.setItemAnimator(new DefaultItemAnimator());
-        ca = new TopicCardAdapter(createTopics());
+        ca = new TopicCardAdapter(createTopics(),this);
         ca.giveContext(getActivity());
         recList.setAdapter(ca);
 
+        return v;
+    }
+
+    @Override
+    public void callback(String topicName) {
+        Bundle bundle = new Bundle();
+        bundle.putString("topicName", topicName);
 
         final Fragment newFragment = new InTopic();
+        newFragment.setArguments(bundle);
         final FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.topics_tab_fragment_container, newFragment).commit();
 
-        return v;
     }
 
     private List<TopicCardInfo> createTopics() {
@@ -68,3 +77,4 @@ public class TopicsTabTopicsList extends Fragment {
 
 
 }
+

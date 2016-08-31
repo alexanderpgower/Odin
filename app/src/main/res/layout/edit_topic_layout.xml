@@ -1,7 +1,7 @@
 <android.support.v7.widget.CardView
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/new_topic_card_view"
+    android:id="@+id/edit_topic_card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="1dp"
@@ -24,11 +24,10 @@
             android:id="@+id/topicTextView" />
 
         <EditText
-            android:id="@+id/newTopicET"
+            android:id="@+id/editTopicET"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/topicTextView"
-            android:hint="type topic name here..."
             android:layout_alignParentStart="true" />
 
         <TextView
@@ -37,7 +36,7 @@
             android:text="Topic Image: "
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/topicImageTextView"
-            android:layout_below="@id/newTopicET"/>
+            android:layout_below="@id/editTopicET"/>
 
         <ImageButton
             android:layout_width="200dp"
@@ -51,10 +50,20 @@
         <ImageButton
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@id/selectImageButton"
             android:src="@drawable/ic_tick"
             android:id="@+id/closeDialogButton"
+            android:scaleType="fitCenter"
+            android:backgroundTint="@color/green"/>
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/selectImageButton"
+            android:src="@drawable/ic_play_arrow"
+            android:id="@+id/playTopicButton"
             android:scaleType="fitCenter"
             android:backgroundTint="@color/green"/>
 

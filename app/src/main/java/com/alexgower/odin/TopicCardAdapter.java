@@ -6,6 +6,9 @@ package com.alexgower.odin;
 import android.content.Context;
 
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -69,6 +72,11 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
                 public void onClick(View v) {
 
                     String clickedTopicName = vTopicName.getText().toString();
+
+                    //Drawable clickedTopicDrawable = vTopicImage.getBackground();
+                    //Bitmap clickedTopicBitmap = ((BitmapDrawable)clickedTopicDrawable).getBitmap();
+
+
                     topicClickListener.callback(clickedTopicName);
 
                 }

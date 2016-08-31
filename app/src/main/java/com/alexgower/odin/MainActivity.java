@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     final Context context = this;
 
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity{
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
-
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(pager);
@@ -303,7 +302,6 @@ public class MainActivity extends AppCompatActivity{
         }
         return image;
     }
-
 
 }
 

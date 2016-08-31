@@ -3,10 +3,14 @@ package com.alexgower.odin;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -32,6 +36,7 @@ public class InTopic extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.in_topic, container, false);
+        setHasOptionsMenu(true);
 
         topicName = getArguments().getString("topicName");
         getTopicCards();
@@ -45,6 +50,7 @@ public class InTopic extends Fragment {
         recList.setItemAnimator(new DefaultItemAnimator());
         ca = new QuestionCardAdapter(createQuestions());
         recList.setAdapter(ca);
+
 
         return v;
     }
@@ -77,6 +83,30 @@ public class InTopic extends Fragment {
 
         if(allQuestions.size()!=allAnswers.size()) {
             Toast.makeText(getContext(), "Error occurred, different number of questions and answers", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(
+            Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_intopic, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.back_item:
+
+                final Fragment newFragment = new TopicsTabTopicsList();
+                final FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.topics_tab_fragment_container, newFragment).commit();
+
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

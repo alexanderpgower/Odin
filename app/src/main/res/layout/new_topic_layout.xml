@@ -25,7 +25,7 @@
 
         <EditText
             android:id="@+id/newTopicET"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/topicTextView"
             android:hint="type topic name here..."
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Topic Image: "
+            android:text="Topic Image: (optional)"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/topicImageTextView"
             android:layout_below="@id/newTopicET"/>
@@ -42,6 +42,8 @@
         <ImageButton
             android:layout_width="200dp"
             android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_below="@id/topicImageTextView"
             android:src="@drawable/ic_add_xxxhdpi"
             android:id="@+id/selectImageButton"

@@ -28,6 +28,7 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
 
     protected List<TopicCardInfo> topicCardList;
     protected Context context;
+    protected int lastClickedPosition;
     TopicClickListener topicClickListener;
 
     public TopicCardAdapter(List<TopicCardInfo> topicCardList, TopicClickListener topicClickListener) {
@@ -71,34 +72,21 @@ public class TopicCardAdapter extends RecyclerView.Adapter<TopicCardAdapter.Topi
                 @Override
                 public void onClick(View v) {
 
+                    lastClickedPosition = getAdapterPosition();
                     String clickedTopicName = vTopicName.getText().toString();
-
-                    //Drawable clickedTopicDrawable = vTopicImage.getBackground();
-                    //Bitmap clickedTopicBitmap = ((BitmapDrawable)clickedTopicDrawable).getBitmap();
-
-
                     topicClickListener.callback(clickedTopicName);
 
                 }
 
             });
 
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-
-                    removeAt(getAdapterPosition());
-                    return true;
-
-                }
-
-                });
-
         }
 
     }
 
-    public void removeAt(int position) {
+    public void removeLastClicked() {
+        int position = lastClickedPosition;
+
         if(position>-1) {
             String topicNameString = topicCardList.get(position).topicName;
             String topicFileName = topicNameString.replace(' ','_');;

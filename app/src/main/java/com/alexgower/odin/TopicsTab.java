@@ -25,5 +25,4 @@ public class TopicsTab extends Fragment{
 
         return v;
     }
-
 }

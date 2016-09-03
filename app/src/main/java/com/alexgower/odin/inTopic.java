@@ -13,12 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +22,8 @@ public class InTopic extends Fragment {
 
     RecyclerView recList;
     QuestionCardAdapter ca;
-    List<String> allQuestions = new ArrayList<>();
-    List<String> allAnswers = new ArrayList<>();
-
+    ArrayList<String> allQuestions = new ArrayList<>();
+    ArrayList<String> allAnswers = new ArrayList<>();
     String topicName;
 
 
@@ -41,49 +35,9 @@ public class InTopic extends Fragment {
         topicName = getArguments().getString("topicName");
         getTopicCards();
 
-        //Create RecyclerView and LinearLayoutManager for that view of "All Cards"
-        recList = (RecyclerView) v.findViewById(R.id.inTopicQuestionsCardList);
-        recList.setHasFixedSize(false);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
-        recList.setItemAnimator(new DefaultItemAnimator());
-        ca = new QuestionCardAdapter(createQuestions());
-        recList.setAdapter(ca);
-
+        setUpLayout(v);
 
         return v;
-    }
-
-    public void getTopicCards() {
-        String filename = topicName.replace(' ', '_');
-
-        try {
-            FileInputStream ins = getActivity().openFileInput(filename);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-            String line;
-
-            int questionOrAnswer = 2;
-            int lineNumber = 2;
-            while ((line = reader.readLine()) != null) {
-                switch (lineNumber % questionOrAnswer) {
-                    case 0:
-                        allQuestions.add(line);
-                        break;
-                    case 1:
-                        allAnswers.add(line);
-                        break;
-                }
-                lineNumber++;
-            }
-
-        } catch (Exception e) {
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        if(allQuestions.size()!=allAnswers.size()) {
-            Toast.makeText(getContext(), "Error occurred, different number of questions and answers", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -103,11 +57,29 @@ public class InTopic extends Fragment {
                 final FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.topics_tab_fragment_container, newFragment).commit();
 
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setUpLayout(View v){
+        //Create RecyclerView and LinearLayoutManager for that view of "All Cards"
+        recList = (RecyclerView) v.findViewById(R.id.inTopicQuestionsCardList);
+        recList.setHasFixedSize(false);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(llm);
+        recList.setItemAnimator(new DefaultItemAnimator());
+        ca = new QuestionCardAdapter(createQuestions());
+        recList.setAdapter(ca);
+
+    }
+
+    private void getTopicCards() {
+        Topic topic = new Topic(topicName,null,getContext());
+        topic.readTopic(allQuestions,allAnswers);
+
     }
 
     private List<QuestionCardInfo> createQuestions() {

@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -76,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if(id == R.id.menu_refresh){
+            int lastItem = pager.getCurrentItem();
+            setUpLayout();
+            pager.setCurrentItem(lastItem);
+            return true;
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -84,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setUpLayout(){
+    private void setUpLayout(){
         // Creating The Toolbar and setting it as the Toolbar for the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -100,17 +105,18 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(pager);
     }
 
-    public void setUpFloatingActionButtions(){
+    private void setUpFloatingActionButtions(){
         //FloatingActionButtons in FloatingActionMenu
         FloatingActionButton floatingActionButton1 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item1);
         FloatingActionButton floatingActionButton2 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item2);
-
 
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {public void onClick(View v) {setUpNewQuestionDialog();}});
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {public void onClick(View v) {setupNewTopicDialog();}});
     }
 
-    public void setUpNewQuestionDialog(){
+    private void setUpNewQuestionDialog(){
+
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(R.layout.new_question_layout);
@@ -136,16 +142,20 @@ public class MainActivity extends AppCompatActivity {
                 if(!topicSpinner.getSelectedItem().toString().equals("Choose topic for question")) {
                     EditText questionEditText = (EditText) dialog.findViewById(R.id.questionEditText);
                     EditText answerEditText = (EditText) dialog.findViewById(R.id.answerEditText);
-                    Topic topic = new Topic(topicSpinner.getSelectedItem().toString());
-                    topic.saveNewCard(context, questionEditText.getText().toString(), answerEditText.getText().toString());
 
-                    questionEditText.setText("");
-                    answerEditText.setText("");
-                    dialog.dismiss();
-                }else{
+                    if(!questionEditText.getText().toString().equals("")&&!answerEditText.getText().toString().equals("")) {
+                        Topic topic = new Topic(topicSpinner.getSelectedItem().toString(),null,context);
+                        topic.saveNewCard(questionEditText.getText().toString(), answerEditText.getText().toString());
+
+                        questionEditText.setText("");
+                        answerEditText.setText("");
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(context, "Error: Question or answer has no content.",Toast.LENGTH_SHORT).show();
+                    }
+                }else {
                     Toast.makeText(context, "Choose a topic for the question.",Toast.LENGTH_SHORT).show();
                 }
-
 
             }
         });
@@ -155,27 +165,34 @@ public class MainActivity extends AppCompatActivity {
                 if(!topicSpinner.getSelectedItem().toString().equals("Choose topic for question")) {
                     EditText questionEditText = (EditText) dialog.findViewById(R.id.questionEditText);
                     EditText answerEditText = (EditText) dialog.findViewById(R.id.answerEditText);
-                    Topic topic = new Topic(topicSpinner.getSelectedItem().toString());
-                    topic.saveNewCard(context, questionEditText.getText().toString(), answerEditText.getText().toString());
 
-                    questionEditText.setText("");
-                    answerEditText.setText("");
-                    dialog.dismiss();
+                    if(!questionEditText.getText().toString().equals("")&&!answerEditText.getText().toString().equals("")) {
+                        Topic topic = new Topic(topicSpinner.getSelectedItem().toString(),null,context);
+                        topic.saveNewCard(questionEditText.getText().toString(), answerEditText.getText().toString());
 
-                    try {
-                        Thread.sleep(300);
-                        dialog.show();
-                    } catch (InterruptedException e) {
+                        questionEditText.setText("");
+                        answerEditText.setText("");
+                        dialog.dismiss();
 
+                        try {
+                            Thread.sleep(300);
+                            dialog.show();
+                        } catch (InterruptedException e) {
+
+                        }
+                    }else {
+                        Toast.makeText(context, "Error: Question or answer has no content.",Toast.LENGTH_SHORT).show();
                     }
-                }else{
+                }else {
                     Toast.makeText(context, "Choose a topic for the question.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    public void setupNewTopicDialog(){
+    private void setupNewTopicDialog(){
+
+        topicBitmap = null;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(R.layout.new_topic_layout);
@@ -200,24 +217,34 @@ public class MainActivity extends AppCompatActivity {
         done.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 EditText newTopicET = (EditText) dialog.findViewById(R.id.newTopicET);
-                String topicName = newTopicET.getText().toString();
+                String topicName = newTopicET.getText().toString().replace("\n","");
 
-                Topic topic = new Topic(topicName,topicBitmap,context);
-                topic.make(context);
+                if(!topicName.equals("")&&!getTopicFilesNames().contains(topicName)) {
+                    Topic topic = new Topic(topicName, topicBitmap, context);
+                    topic.make();
+                    dialog.dismiss();
+                }else {
+                    Toast.makeText(context,"Error: Topic name is empty or already used.",Toast.LENGTH_SHORT).show();
+                }
 
-                dialog.dismiss();
             }
         });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ImageButton selectImage = (ImageButton) dialog.findViewById(R.id.selectImageButton);
+        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == IMAGE_PICKER_SELECT  && resultCode == Activity.RESULT_OK) {
+
             try {
+                ImageButton selectImage = (ImageButton) dialog.findViewById(R.id.selectImageButton);
                 Uri selectedImage = data.getData();
                 InputStream imageStream = getContentResolver().openInputStream(selectedImage);
-                Bitmap selectedImageBitmap = BitmapFactory.decodeStream(imageStream);
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 4;
+
+                Bitmap selectedImageBitmap = BitmapFactory.decodeStream(imageStream,null,options);
 
                 topicBitmap = Bitmap.createScaledBitmap(selectedImageBitmap, 200, 200, false);
 
@@ -231,22 +258,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setUpExampleTopic(){
-        //Hardcoded file information just to check if already exists
-        String filepath = getFilesDir() + "/Example_Topic";
-        File exampleTopicFile = new File(filepath);
+    private void setUpExampleTopic(){
 
-        if(!exampleTopicFile.exists()){
+        if(getTopicFilesNames().size()==0){
             Topic exampleTopic = new Topic("Example Topic",null,context);
-            exampleTopic.make(context);
+            exampleTopic.make();
             for(int i=0; i<100;i++){
                 String question = "Example Question " + i ;
                 String answer = "Answer to example question " + i;
-                exampleTopic.saveNewCard(context,question,answer);
+                exampleTopic.saveNewCard(question,answer);
             }
             Toast.makeText(context,"Auto-made 'Example Topic'.",Toast.LENGTH_LONG).show();
-            }
         }
+    }
 
     public ArrayList<String> getTopicFilesNames(){
         File allFilesInPath[] = getFilesDir().listFiles();
@@ -290,9 +314,8 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-
     public Bitmap getBitmapOf(File filePath) {
-        Bitmap image = BitmapFactory.decodeResource(getResources(),R.drawable.tick);
+        Bitmap image = null;
         try {
             FileInputStream fi = new FileInputStream(filePath);
             image = BitmapFactory.decodeStream(fi);
@@ -302,6 +325,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return image;
     }
-
 }
 

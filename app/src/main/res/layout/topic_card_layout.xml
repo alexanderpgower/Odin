@@ -22,15 +22,6 @@
             android:layout_centerHorizontal="true"
             android:src="@drawable/tick" />
 
-        <!-- <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+position/topicImageView"
-            android:layout_centerHorizontal="true"
-            android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:position="@+position/topicNameTextView" /> -->
-
         <com.alexgower.odin.SingleLineTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

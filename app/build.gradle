@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.1"
 
     defaultConfig {
-        applicationId "com.alexgower.odin"
+        applicationId "com.alexgower.odinfull"
         minSdkVersion 18
         targetSdkVersion 24
         versionCode 1

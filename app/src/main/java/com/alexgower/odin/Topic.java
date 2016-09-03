@@ -5,47 +5,51 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Topic {
     Context context;
+
     String topicName;
+    String topicFileName;
     Bitmap topicImage;
 
-    public Topic(String topicName,Bitmap topicImage, Context c){
+    public Topic(String topicName,Bitmap topicImage,Context c){
         this.topicName = topicName;
-
+        this.topicFileName = topicName.replace(' ','_');
         this.context = c;
 
         if(topicImage==null){
-            this.topicImage = BitmapFactory.decodeResource(c.getResources(), R.drawable.topic_default);
+            BitmapFactory.Options mBitmapOptions = new BitmapFactory.Options();
+            mBitmapOptions.inSampleSize = 4;
+
+            this.topicImage = BitmapFactory.decodeResource(c.getResources(), R.drawable.topic_default, mBitmapOptions);
         }else{
             this.topicImage = topicImage;
         }
     }
 
-    public Topic(String topicName){
-        this.topicName = topicName;
-    }
-
-    public void make(Context c){
+    public void make(){
         try {
-            FileOutputStream fos = c.openFileOutput(filenameOfTopic(topicName), Context.MODE_APPEND);
+            FileOutputStream fos = context.openFileOutput(topicFileName, Context.MODE_APPEND);
             fos.close();
 
-            String imageFileName = filenameOfTopic(topicName) + ".png";
+            String imageFileName = topicFileName + ".png";
             FileOutputStream fos2 = context.openFileOutput(imageFileName,Context.MODE_PRIVATE);
             topicImage.compress(Bitmap.CompressFormat.PNG, 100, fos2);
-            fos.close();
+            fos2.close();
         } catch(Exception e){
-            Toast.makeText(c,topicName,Toast.LENGTH_LONG).show();
+            Toast.makeText(context,e.getMessage(),Toast.LENGTH_LONG).show();
         }
     }
 
-    public void saveNewCard(Context c, String questionIn, String answerIn){
+    public void saveNewCard(String questionIn, String answerIn){
         try {
-            FileOutputStream fos = c.openFileOutput(filenameOfTopic(topicName), Context.MODE_APPEND);
+            FileOutputStream fos = context.openFileOutput(topicFileName, Context.MODE_APPEND);
 
             String question = questionIn + "\r\n";
             fos.write(question.getBytes());
@@ -54,12 +58,38 @@ public class Topic {
             fos.close();
 
         } catch(Exception e){
-            Toast.makeText(c,e.getMessage(),Toast.LENGTH_LONG).show();
+            Toast.makeText(context,e.getMessage(),Toast.LENGTH_LONG).show();
         }
     }
 
-    public String filenameOfTopic(String topicNameIn){
-        return topicNameIn.replace(' ','_');
+    public void readTopic(ArrayList<String> questionsArray, ArrayList<String> answersArray){
+        try {
+            FileInputStream ins = context.openFileInput(topicFileName);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+            String line;
+
+            int questionOrAnswer = 2;
+            int lineNumber = 2;
+            while ((line = reader.readLine()) != null) {
+                switch (lineNumber % questionOrAnswer) {
+                    case 0:
+                        questionsArray.add(line);
+                        break;
+                    case 1:
+                        answersArray.add(line);
+                        break;
+                }
+                lineNumber++;
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        if(questionsArray.size()!=answersArray.size()) {
+            Toast.makeText(context, "Error occurred, different number of questions and answers", Toast.LENGTH_LONG).show();
+        }
     }
+
 
 }

@@ -7,7 +7,18 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/topicsCardList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click refresh at the top to see changes to topics"
+        android:textAppearance="?android:attr/textAppearance"
+        android:textColor="@android:color/darker_gray"
+        android:id="@+id/topicListRefreshTV"
+        android:layout_below="@id/topicsCardList"
+        android:layout_centerHorizontal="true"/>
+
 
 </RelativeLayout>

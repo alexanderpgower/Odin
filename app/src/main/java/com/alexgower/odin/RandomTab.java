@@ -23,8 +23,8 @@ public class RandomTab extends Fragment {
 
     RecyclerView recList;
     QuestionCardAdapter ca;
-    List<String> allQuestions = new ArrayList<>();
-    List<String> allAnswers = new ArrayList<>();
+    ArrayList<String> allQuestions = new ArrayList<>();
+    ArrayList<String> allAnswers = new ArrayList<>();
 
 
     @Override
@@ -32,7 +32,12 @@ public class RandomTab extends Fragment {
         View v = inflater.inflate(R.layout.random_tab, container, false);
 
         getAllCards();
+        setUpLayout(v);
 
+        return v;
+    }
+
+    private void setUpLayout(View v){
         //Create RecyclerView and LinearLayoutManager for that view of "All Cards"
         recList = (RecyclerView) v.findViewById(R.id.questionsCardList);
         recList.setHasFixedSize(false);
@@ -42,45 +47,18 @@ public class RandomTab extends Fragment {
         recList.setItemAnimator(new DefaultItemAnimator());
         ca = new QuestionCardAdapter(createQuestions());
         recList.setAdapter(ca);
-
-        return v;
     }
 
-    public void getAllCards() {
+    private void getAllCards() {
 
         MainActivity mainActivity = ((MainActivity)getActivity());
 
-        ArrayList<File> topicFilesInPath = mainActivity.getTopicFiles();
+        ArrayList<String> topicFileNamesInPath = mainActivity.getTopicFilesNames();
 
-        for(int i = 0; i<topicFilesInPath.size();i++) {
-            String filename = topicFilesInPath.get(i).getName();
+        for(int i = 0; i<topicFileNamesInPath.size();i++) {
+            Topic topic = new Topic(topicFileNamesInPath.get(i), null, getContext());
+            topic.readTopic(allQuestions, allAnswers);
 
-            try {
-                FileInputStream ins = getActivity().openFileInput(filename);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-                String line;
-
-                int questionOrAnswer = 2;
-                int lineNumber = 2;
-                while ((line = reader.readLine()) != null) {
-                    switch (lineNumber % questionOrAnswer) {
-                        case 0:
-                            allQuestions.add(line);
-                            break;
-                        case 1:
-                            allAnswers.add(line);
-                            break;
-                    }
-                    lineNumber++;
-                }
-
-            } catch (Exception e) {
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
-
-        if(allQuestions.size()!=allAnswers.size()){
-            Toast.makeText(getContext(),"Error occured, different number of questions and answers",Toast.LENGTH_LONG).show();
         }
     }
 
